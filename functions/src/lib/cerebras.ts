@@ -4,7 +4,7 @@
 
 import Cerebras from "@cerebras/cerebras_cloud_sdk";
 
-const MODEL = "llama-4-scout-17b-16e-instruct";
+const MODEL = "gpt-oss-120b";
 
 interface FileEdit {
   file_path: string;
