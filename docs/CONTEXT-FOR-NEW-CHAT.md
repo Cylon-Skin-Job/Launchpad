@@ -13,7 +13,7 @@ The core idea: **each Cloud Function is one ability**. Add abilities one at a ti
 
 ## Why We Rebuilt From Scratch
 
-The previous architecture routed prompts through Kimi CLI on a laptop to avoid paying for LLM tokens. It required a WebSocket relay on Cloud Run, a bridge process, a wire protocol, a pairing token system, and a React frontend. All of that was complexity tax for the wrong tradeoff. We killed it and went fully cloud-native with paid API tokens.
+The previous architecture routed prompts through Kimi CLI on a laptop to avoid paying for LLM tokens. It required a WebSocket relay on Cloud Run, a bridge process, a wire protocol, a pairing token system, and a React frontend. All of that was complexity tax for the wrong tradeoff. We killed it and went fully cloud‑native with paid API tokens.
 
 ---
 
@@ -34,7 +34,7 @@ Firebase CLI is authenticated. Run `firebase projects:list` to verify.
 
 ### GitLab Token
 - **File:** `~/.config/phoenix-gitlab.env`
-- **Value:** `GITLAB_TOKEN=glpat-Zxbplo8wSyEKMllKxPXAHG86MQp1Ompxd3IxCw.01.120f5a82x`
+- **Value:** `GITLAB_TOKEN=<YOUR_GITLAB_PERSONAL_ACCESS_TOKEN>`
 - **Also in Secret Manager** as `GITLAB_TOKEN`
 
 ### All Secrets in Google Cloud Secret Manager
@@ -44,7 +44,7 @@ Three secrets, all stored under project `launchpad-ai-orchestrator`:
 |---|---|
 | `GITLAB_TOKEN` | GitLab personal access token (`glpat-...`) |
 | `CEREBRAS_API_KEY` | Cerebras inference API key (`csk-...`) |
-| `GITLAB_WEBHOOK_SECRET` | Shared secret for webhook verification (`74af61beb39b4ec6945828f9988a9ad8c83efdf3`) |
+| `GITLAB_WEBHOOK_SECRET` | Shared secret for webhook verification (`<YOUR_WEBHOOK_SECRET>`) |
 
 Access any secret value via:
 ```bash
@@ -53,9 +53,9 @@ gcloud secrets versions access latest --secret=SECRET_NAME --project=launchpad-a
 
 ### Webhook Secret
 ```
-74af61beb39b4ec6945828f9988a9ad8c83efdf3
+<YOUR_WEBHOOK_SECRET>
 ```
-This goes in GitLab's webhook config as the "Secret Token". The function checks it against `X-Gitlab-Token` header.
+This goes in GitLab's webhook config as the "Secret Token". The function checks it against the `X-Gitlab-Token` header.
 
 ---
 
@@ -148,7 +148,7 @@ Launchpad/
 HTTP function triggered by GitLab push webhook. What it does:
 
 1. Verifies `X-Gitlab-Token` header against `GITLAB_WEBHOOK_SECRET`
-2. Rejects non-push events and branch deletions
+2. Rejects non‑push events and branch deletions
 3. Fetches diff from GitLab API (`/projects/:id/repository/compare`)
 4. Filters to `.md` files only — ignores all other files
 5. Fetches full current content of each changed md file
@@ -166,7 +166,7 @@ firebase deploy --only functions --project launchpad-ai-orchestrator
 **After deploying, register webhook in GitLab:**
 - Settings → Webhooks → Add new webhook
 - URL: `https://us-central1-launchpad-ai-orchestrator.cloudfunctions.net/onGitLabPush`
-- Secret Token: `74af61beb39b4ec6945828f9988a9ad8c83efdf3`
+- Secret Token: `<YOUR_WEBHOOK_SECRET>`
 - Trigger: Push events
 - Branch filter: `master` (optional)
 
@@ -180,7 +180,7 @@ firebase deploy --only functions --project launchpad-ai-orchestrator
 | `templates` | Pipeline templates (preserved from old system) |
 | `jobs` | Job definitions (preserved from old system) |
 | `runs` | Run history (preserved from old system) |
-| `ledger` | Append-only event log (preserved from old system) |
+| `ledger` | Append‑only event log (preserved from old system) |
 
 ---
 
