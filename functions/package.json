@@ -1,0 +1,19 @@
+{
+  "name": "launchpad-functions",
+  "main": "lib/index.js",
+  "engines": {
+    "node": "20"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.0.0",
+    "firebase-functions": "^6.3.0",
+    "@cerebras/cerebras_cloud_sdk": "latest"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "deploy": "npm run build && firebase deploy --only functions"
+  }
+}

@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+functions/node_modules/
+
+# Build output
+functions/lib/
+
+# Firebase
+.firebase/
+firebase-debug.log
+
+# Environment & secrets
+.env
+.env.local
+serviceAccountKey*.json
+*-firebase-adminsdk-*.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
