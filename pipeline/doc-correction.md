@@ -29,8 +29,8 @@ Filter to .md files only — skip everything else
 Fetch full content of each changed .md file
 (GET /projects/:id/repository/files/:path/raw?ref=after)
     ↓
-Send diff + file contents to Cerebras LLM
-Model: gpt-oss-120b
+Send diff + file contents to DeepInfra LLM
+Model: openai/gpt-oss-120b
 Prompt: identify stale, broken, or inconsistent documentation
     ↓
 LLM returns JSON: { reasoning, edits: [{ file_path, content }] }
@@ -105,8 +105,8 @@ Rules:
 | Region | `us-central1` |
 | Runtime | Node.js 20 |
 | URL | `https://us-central1-launchpad-ai-orchestrator.cloudfunctions.net/onGitLabPush` |
-| LLM | Cerebras `gpt-oss-120b` |
-| Secrets | `GITLAB_TOKEN`, `CEREBRAS_API_KEY`, `GITLAB_WEBHOOK_SECRET` |
+| LLM | DeepInfra `openai/gpt-oss-120b` |
+| Secrets | `GITLAB_TOKEN`, `DEEPINFRA_API_KEY`, `GITLAB_WEBHOOK_SECRET` |
 | Audit log | Firestore `agent_actions` collection |
 
 ---
@@ -125,7 +125,8 @@ Rules:
 ```
 functions/src/onGitLabPush.ts   — function entry point
 functions/src/lib/gitlab.ts     — GitLab API client
-functions/src/lib/cerebras.ts   — Cerebras LLM client
+functions/src/lib/deepinfra.ts  — DeepInfra LLM client (active)
+functions/src/lib/cerebras.ts   — Cerebras LLM client (available)
 ```
 
 ---
@@ -143,7 +144,7 @@ firebase functions:log --project launchpad-ai-orchestrator
 
 ## Extending This Pipeline
 
-To change what gets evaluated, edit the system prompt in `functions/src/lib/cerebras.ts`.
+To change what gets evaluated, edit the system prompt in `functions/src/lib/deepinfra.ts`.
 
 To evaluate non-`.md` files, change the filter in `functions/src/onGitLabPush.ts` line 73:
 ```typescript

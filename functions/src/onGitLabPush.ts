@@ -2,7 +2,7 @@
  * onGitLabPush — First ability.
  *
  * HTTP function triggered by GitLab push webhook.
- * Evaluates markdown file diffs via Cerebras LLM and commits corrections back.
+ * Evaluates markdown file diffs via DeepInfra LLM and commits corrections back.
  */
 
 import { onRequest } from "firebase-functions/v2/https";
@@ -10,7 +10,7 @@ import { defineSecret } from "firebase-functions/params";
 import { initializeApp, getApps } from "firebase-admin/app";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { getDiff, getFileContent, commitFiles } from "./lib/gitlab";
-import { evaluateDiff } from "./lib/cerebras";
+import { evaluateDiff } from "./lib/deepinfra";
 
 // Initialize Firebase Admin (idempotent)
 if (!getApps().length) {
@@ -20,11 +20,11 @@ const db = getFirestore();
 
 // Secrets
 const gitlabToken = defineSecret("GITLAB_TOKEN");
-const cerebrasApiKey = defineSecret("CEREBRAS_API_KEY");
+const deepinfraApiKey = defineSecret("DEEPINFRA_API_KEY");
 const webhookSecret = defineSecret("GITLAB_WEBHOOK_SECRET");
 
 export const onGitLabPush = onRequest(
-  { secrets: [gitlabToken, cerebrasApiKey, webhookSecret] },
+  { secrets: [gitlabToken, deepinfraApiKey, webhookSecret] },
   async (req, res) => {
     // Only accept POST
     if (req.method !== "POST") {
@@ -90,8 +90,8 @@ export const onGitLabPush = onRequest(
       // 4. Build combined diff string
       const diffText = mdDiffs.map((d) => d.diff).join("\n\n");
 
-      // 5. Send to Cerebras for evaluation
-      const result = await evaluateDiff(cerebrasApiKey.value(), diffText, files);
+      // 5. Send to DeepInfra for evaluation
+      const result = await evaluateDiff(deepinfraApiKey.value(), diffText, files);
 
       // 6. If corrections suggested, commit them back
       let commitId: string | null = null;
